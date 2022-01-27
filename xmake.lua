@@ -1,7 +1,7 @@
-project ("EGE")
+project ("chesses")
 
-include ("./lib/xege/xmake.lua")
 include ("./lib/sol/xmake.lua")
+include ("./lib/xege/xmake.lua")
 
 target ("chess")
 	set_kind ("binary")
