@@ -1,4 +1,7 @@
-#include "graphics.h"
+#define SHOW_CONSOLE
+
+#include <graphics.h>
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -12,6 +15,7 @@ mouse_msg gMouseMsg = { 0 };
 key_msg gKeyMsg = { 0 };
 std::map <std::string, PIMAGE> res;
 
+const int scale = 32;
 
 // 加载函数，用于初始化资源
 void load (void);
@@ -26,16 +30,16 @@ int main (int argc, char *argv []) {
 	// 手动刷新模式
 	setinitmode (INIT_RENDERMANUAL);
 	// 界面分辨率
-	initgraph (1800, 1600);
+	initgraph (800, 600);
 	// setbkmode (TRANSPARENT);
 	load ();
 	for (;is_run (); delay_fps (60), cleardevice ()) {
-		
+
 		eventUpdate ();
 		dataUpdate ();
 		drawInterface ();
 	}
-	
+
 	closegraph ();
 	return 0;
 }
@@ -43,12 +47,13 @@ int main (int argc, char *argv []) {
 void load (void) {
 	// 从外部读入文件名和路径数据，然后往map中写入数据
 	PIMAGE tmp = newimage ();
-	getimage_pngfile (tmp, "chesses.png");
+	getimage_pngfile (tmp, "./res/chesses.png");
 	std::fstream file;
 	file.open ("chesses.txt", std::ios::in);
 	std::string str;
 	int x, y, w, h;
 	while (file >> str >> x >> y >> w >> h) {
+		// std::cout << str << " " << x << " " << y << " " << w << " " << h << std::endl;
 		if (res.count(str)==0) {
 			res.insert ({str, newimage()});
 			getimage (res [str], tmp, x, y, w, h);
@@ -57,7 +62,7 @@ void load (void) {
 		}
 	}
 	file.close ();
-	delimage (tmp);
+	// delimage (tmp);
 	srand(time(nullptr));
 }
 void eventUpdate (void) {
@@ -74,67 +79,67 @@ void dataUpdate (void) {
 }
 void drawInterface (void) {
 //
-setfillcolor (EGERGB(247,165,47));
-bar (0,0,getwidth(),getheight());
+	setfillcolor (EGERGB(247,165,47));
+	bar (0,0,getwidth(),getheight());
 
-for (int i = 0; i < getwidth()/32; i++) {
-	for (int j = 0; j < getheight()/32; j++) {
-		switch (rand()%3) {
-			case 0:
-				putimage_withalpha (nullptr, res["white"], i*32, j*32);
-			break;
-			case 1:
-				putimage_withalpha (nullptr, res["black"], i*32, j*32);
-			break;
-			case 2:
-				putimage_withalpha(nullptr, res["chineseChess"], i*32, j*32);
-				switch (rand()%14) {
-					case 0:
-						putimage_withalpha (nullptr, res["shuai1"], i*32, j*32);
-					break;
-					case 1:
-						putimage_withalpha (nullptr, res["shi1"], i*32, j*32);
-					break;
-					case 2:
-						putimage_withalpha (nullptr, res["xiang1"], i*32, j*32);
-					break;
-					case 3:
-						putimage_withalpha (nullptr, res["ma1"], i*32, j*32);
-					break;
-					case 4:
-						putimage_withalpha (nullptr, res["che1"], i*32, j*32);
-					break;
-					case 5:
-						putimage_withalpha (nullptr, res["shuai2"], i*32, j*32);
-					break;
-					case 6:
-						putimage_withalpha (nullptr, res["bing"], i*32, j*32);
-					break;
-					case 7:
-						putimage_withalpha (nullptr, res["jiang"], i*32, j*32);
-					break;
-					case 8:
-						putimage_withalpha (nullptr, res["shi2"], i*32, j*32);
-					break;
-					case 9:
-						putimage_withalpha (nullptr, res["xiang2"], i*32, j*32);
-					break;
-					case 10:
-						putimage_withalpha (nullptr, res["ma2"], i*32, j*32);
-					break;
-					case 11:
-						putimage_withalpha (nullptr, res["che2"], i*32, j*32);
-					break;
-					case 12:
-						putimage_withalpha (nullptr, res["pao"], i*32, j*32);
-					break;
-					case 13:
-						putimage_withalpha (nullptr, res["zu"], i*32, j*32);
-					break;
-				}
-			break;
+	for (int i = 0; i < getwidth()/scale; i++) {
+		for (int j = 0; j < getheight()/scale; j++) {
+			switch (rand()%3) {
+				case 0:
+					putimage_withalpha (nullptr, res["white"], i*scale, j*scale);
+				break;
+				case 1:
+					putimage_withalpha (nullptr, res["black"], i*scale, j*scale);
+				break;
+				case 2:
+					putimage_withalpha(nullptr, res["chineseChess"], i*scale, j*scale);
+					switch (rand()%14) {
+						case 0:
+							putimage_withalpha (nullptr, res["shuai1"], i*scale, j*scale);
+						break;
+						case 1:
+							putimage_withalpha (nullptr, res["shi1"], i*scale, j*scale);
+						break;
+						case 2:
+							putimage_withalpha (nullptr, res["xiang1"], i*scale, j*scale);
+						break;
+						case 3:
+							putimage_withalpha (nullptr, res["ma1"], i*scale, j*scale);
+						break;
+						case 4:
+							putimage_withalpha (nullptr, res["che1"], i*scale, j*scale);
+						break;
+						case 5:
+							putimage_withalpha (nullptr, res["shuai2"], i*scale, j*scale);
+						break;
+						case 6:
+							putimage_withalpha (nullptr, res["bing"], i*scale, j*scale);
+						break;
+						case 7:
+							putimage_withalpha (nullptr, res["jiang"], i*scale, j*scale);
+						break;
+						case 8:
+							putimage_withalpha (nullptr, res["shi2"], i*scale, j*scale);
+						break;
+						case 9:
+							putimage_withalpha (nullptr, res["xiang2"], i*scale, j*scale);
+						break;
+						case 10:
+							putimage_withalpha (nullptr, res["ma2"], i*scale, j*scale);
+						break;
+						case 11:
+							putimage_withalpha (nullptr, res["che2"], i*scale, j*scale);
+						break;
+						case 12:
+							putimage_withalpha (nullptr, res["pao"], i*scale, j*scale);
+						break;
+						case 13:
+							putimage_withalpha (nullptr, res["zu"], i*scale, j*scale);
+						break;
+					}
+				break;
+			}
 		}
 	}
-}
 
 }
