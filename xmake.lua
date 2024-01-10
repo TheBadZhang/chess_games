@@ -1,7 +1,7 @@
 add_repositories("xege-repo git@gitee.com:xege/ege-xrepo.git")
 add_requires("xege 20.08")
 add_requires("lua")
-
+add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
 
 target ("chess")
 	add_packages("xege", "lua")

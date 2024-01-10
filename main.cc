@@ -16,7 +16,9 @@ key_msg gKeyMsg = { 0 };
 std::map <std::string, PIMAGE> res;
 
 const int scale = 32;
-
+std::string map[32][32] = {};
+std::string turn = "black";
+int current_x = -1, current_y = -1;
 // 加载函数，用于初始化资源
 void load (void);
 // 事件更新函数，主要用来接收事件，比如鼠标键盘事件
@@ -62,6 +64,12 @@ void load (void) {
 		}
 	}
 	file.close ();
+
+	for (int i = 0; i < 32; i++) {
+		for (int j = 0; j <32; j++) {
+			map[i][j] = "empty";
+		}
+	}
 	// delimage (tmp);
 	srand(time(nullptr));
 }
@@ -69,6 +77,25 @@ void eventUpdate (void) {
 //
 	while (mousemsg ()) {
 		gMouseMsg = getmouse ();
+		double distance = std::hypot(gMouseMsg.x-current_x*scale-scale/2,
+									gMouseMsg.y-current_y*scale-scale/2);
+		if (distance > 22) {
+			std::cout << distance << std::endl;
+			current_x = gMouseMsg.x/scale;
+			current_y = gMouseMsg.y/scale;
+		}
+		if (gMouseMsg.is_down() && gMouseMsg.is_left()) {
+			if (map[current_y][current_x] == "empty") {
+				map[current_y][current_x] = turn;
+				if (turn == "black") {
+					turn = "white";
+				} else {
+					turn = "black";
+				}
+			} else {
+
+			}
+		}
 	}
 	while (kbmsg ()) {
 		gKeyMsg = getkey ();
@@ -82,64 +109,19 @@ void drawInterface (void) {
 	setfillcolor (EGERGB(247,165,47));
 	bar (0,0,getwidth(),getheight());
 
-	for (int i = 0; i < getwidth()/scale; i++) {
-		for (int j = 0; j < getheight()/scale; j++) {
-			switch (rand()%3) {
-				case 0:
-					putimage_withalpha (nullptr, res["white"], i*scale, j*scale);
-				break;
-				case 1:
-					putimage_withalpha (nullptr, res["black"], i*scale, j*scale);
-				break;
-				case 2:
-					putimage_withalpha(nullptr, res["chineseChess"], i*scale, j*scale);
-					switch (rand()%14) {
-						case 0:
-							putimage_withalpha (nullptr, res["shuai1"], i*scale, j*scale);
-						break;
-						case 1:
-							putimage_withalpha (nullptr, res["shi1"], i*scale, j*scale);
-						break;
-						case 2:
-							putimage_withalpha (nullptr, res["xiang1"], i*scale, j*scale);
-						break;
-						case 3:
-							putimage_withalpha (nullptr, res["ma1"], i*scale, j*scale);
-						break;
-						case 4:
-							putimage_withalpha (nullptr, res["che1"], i*scale, j*scale);
-						break;
-						case 5:
-							putimage_withalpha (nullptr, res["shuai2"], i*scale, j*scale);
-						break;
-						case 6:
-							putimage_withalpha (nullptr, res["bing"], i*scale, j*scale);
-						break;
-						case 7:
-							putimage_withalpha (nullptr, res["jiang"], i*scale, j*scale);
-						break;
-						case 8:
-							putimage_withalpha (nullptr, res["shi2"], i*scale, j*scale);
-						break;
-						case 9:
-							putimage_withalpha (nullptr, res["xiang2"], i*scale, j*scale);
-						break;
-						case 10:
-							putimage_withalpha (nullptr, res["ma2"], i*scale, j*scale);
-						break;
-						case 11:
-							putimage_withalpha (nullptr, res["che2"], i*scale, j*scale);
-						break;
-						case 12:
-							putimage_withalpha (nullptr, res["pao"], i*scale, j*scale);
-						break;
-						case 13:
-							putimage_withalpha (nullptr, res["zu"], i*scale, j*scale);
-						break;
-					}
-				break;
-			}
+	for (int i = 0; i < 32; i++) {
+		ege::setcolor(EGERGB(0,0,0));
+		ege::line(0, i*scale, 32*scale, i*scale);
+		ege::line(i*scale, 0, i*scale, 32*scale);
+
+		for (int j = 0; j <32; j++) {
+			ege::putimage_withalpha(nullptr, res[map[i][j]], j*scale,i*scale);
 		}
+	}
+	ege::setcolor(EGERGB(255,255,255));
+	xyprintf(0,0,"%f", ege::getfps());
+	if (map[current_y][current_x] == "empty") {
+		ege::putimage_withalpha(nullptr, res[turn], current_x*scale, current_y*scale);
 	}
 
 }

@@ -1,5 +1,6 @@
 white 32 0 32 32
 black 64 0 32 32
+empty 96 0 32 32
 chineseChess 0 0 32 32
 shuai1 0 32 32 32
 shi1 32 32 32 32
